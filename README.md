@@ -1,98 +1,352 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🍽️ Restaurant Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Application de gestion de restaurant multi-tenant permettant aux clients de commander des plats et aux équipes (cuisiniers, serveurs, super admin) de gérer les commandes avec un système de rôles personnalisables.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Fonctionnalités
 
-## Description
+- ✅ **Multi-tenant** : Organisations avec plusieurs restaurants
+- ✅ **Gestion des rôles** : Super Admin, Serveur, Cuisinier + rôles personnalisés
+- ✅ **Gestion des menus** : Menus et plats avec catégories
+- ✅ **Gestion des tables** : Statuts (disponible, occupée, réservée)
+- ✅ **Gestion des commandes** : Workflow complet (pending → preparing → ready → served → paid)
+- ✅ **Paiements** : Cash (Mobile Money et Carte à venir)
+- ✅ **Statistiques** : Ventes, revenus, plats populaires
+- ✅ **Temps réel** : Notifications WebSocket pour les commandes
+- ✅ **API REST** : Documentation Swagger complète
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Stack Technique
 
-## Project setup
+- **Backend** : NestJS (Node.js/TypeScript)
+- **Base de données** : PostgreSQL
+- **ORM** : Prisma
+- **Authentification** : JWT + Passport
+- **Validation** : class-validator
+- **Documentation** : Swagger/OpenAPI
+- **Temps réel** : Socket.io
 
+## 📦 Installation
+
+### Prérequis
+
+- Node.js >= 18
+- PostgreSQL >= 14
+- pnpm (recommandé) ou npm
+
+### Étapes
+
+1. **Cloner le projet**
 ```bash
-$ pnpm install
+git clone <repository-url>
+cd restaurant
 ```
 
-## Compile and run the project
-
+2. **Installer les dépendances**
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm install
 ```
 
-## Run tests
-
+3. **Configurer les variables d'environnement**
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+Éditez `.env` et configurez votre base de données :
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/restaurant_db?schema=public"
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+JWT_EXPIRATION="7d"
+PORT=3000
+NODE_ENV="development"
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+4. **Créer la base de données PostgreSQL**
+```bash
+# Connectez-vous à PostgreSQL
+psql -U postgres
 
-## Resources
+# Créez la base de données
+CREATE DATABASE restaurant_db;
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+5. **Générer le client Prisma**
+```bash
+pnpm prisma:generate
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+6. **Exécuter les migrations**
+```bash
+pnpm prisma:migrate
+```
 
-## Support
+7. **Peupler la base de données (optionnel)**
+```bash
+pnpm prisma:seed
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Cela créera :
+- 1 organisation
+- 1 restaurant
+- 3 rôles (Super Admin, Serveur, Cuisinier)
+- 3 utilisateurs (un par rôle)
+- 4 tables
+- 1 menu avec 6 plats
 
-## Stay in touch
+## 🚀 Démarrage
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Mode développement
+```bash
+pnpm start:dev
+```
 
-## License
+L'application sera accessible sur :
+- **API** : http://localhost:3000
+- **Swagger** : http://localhost:3000/api
+- **Prisma Studio** : `pnpm prisma:studio`
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Mode production
+```bash
+pnpm build
+pnpm start:prod
+```
+
+## 🔐 Authentification
+
+### Utilisateurs de test (après seed)
+
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Super Admin | admin@legourmet.bj | password123 |
+| Serveur | server@legourmet.bj | password123 |
+| Cuisinier | cook@legourmet.bj | password123 |
+
+### Connexion
+
+```bash
+POST /auth/login
+{
+  "email": "admin@legourmet.bj",
+  "password": "password123"
+}
+```
+
+Réponse :
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "...",
+    "email": "admin@legourmet.bj",
+    "firstName": "Admin",
+    "lastName": "User",
+    "role": {
+      "name": "Super Admin",
+      "permissions": { ... }
+    }
+  }
+}
+```
+
+Utilisez le token dans les requêtes suivantes :
+```
+Authorization: Bearer <access_token>
+```
+
+## 📚 Structure du Projet
+
+```
+src/
+├── common/              # Guards, decorators, interceptors
+│   ├── guards/
+│   │   ├── jwt-auth.guard.ts
+│   │   └── roles.guard.ts
+│   └── decorators/
+│       ├── roles.decorator.ts
+│       └── current-user.decorator.ts
+├── prisma/              # Module Prisma
+│   ├── prisma.module.ts
+│   └── prisma.service.ts
+├── modules/             # Modules métier (à venir)
+│   ├── auth/
+│   ├── organization/
+│   ├── restaurant/
+│   ├── user/
+│   ├── role/
+│   ├── table/
+│   ├── menu/
+│   ├── dish/
+│   ├── order/
+│   ├── payment/
+│   └── statistics/
+├── app.module.ts
+└── main.ts
+
+prisma/
+├── schema.prisma        # Schéma de base de données
+├── seed.ts              # Données de test
+└── migrations/          # Migrations
+```
+
+## 🗄️ Schéma de Base de Données
+
+### Entités principales
+
+- **Organization** : Organisation (peut avoir plusieurs restaurants)
+- **Restaurant** : Restaurant (appartient à une organisation)
+- **User** : Utilisateur (employé d'un restaurant)
+- **Role** : Rôle avec permissions personnalisables
+- **Table** : Table du restaurant
+- **Menu** : Menu du restaurant
+- **Dish** : Plat dans un menu
+- **Order** : Commande
+- **OrderItem** : Article de commande
+- **Payment** : Paiement
+
+### Relations
+
+```
+Organization (1) ──→ (N) Restaurant
+Restaurant (1) ──→ (N) User
+Restaurant (1) ──→ (N) Role
+Restaurant (1) ──→ (N) Table
+Restaurant (1) ──→ (N) Menu
+Menu (1) ──→ (N) Dish
+Table (1) ──→ (N) Order
+Order (1) ──→ (N) OrderItem
+Order (1) ──→ (1) Payment
+```
+
+## 🔒 Système de Permissions (RBAC)
+
+Les permissions sont stockées en JSON dans la table `Role` :
+
+```json
+{
+  "orders": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": false
+  },
+  "menu": {
+    "create": false,
+    "read": true,
+    "update": false,
+    "delete": false
+  },
+  "statistics": {
+    "read": false
+  }
+}
+```
+
+### Utilisation dans le code
+
+```typescript
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('orders.create', 'orders.read')
+@Post()
+createOrder(@CurrentUser() user: User) {
+  // ...
+}
+```
+
+## 📝 Scripts Disponibles
+
+| Script | Description |
+|--------|-------------|
+| `pnpm start:dev` | Démarrer en mode développement |
+| `pnpm build` | Compiler le projet |
+| `pnpm start:prod` | Démarrer en mode production |
+| `pnpm prisma:generate` | Générer le client Prisma |
+| `pnpm prisma:migrate` | Exécuter les migrations |
+| `pnpm prisma:studio` | Ouvrir Prisma Studio |
+| `pnpm prisma:seed` | Peupler la base de données |
+| `pnpm db:setup` | Migrer + Seed |
+| `pnpm test` | Exécuter les tests |
+| `pnpm lint` | Linter le code |
+
+## 🧪 Tests
+
+```bash
+# Tests unitaires
+pnpm test
+
+# Tests e2e
+pnpm test:e2e
+
+# Couverture
+pnpm test:cov
+```
+
+## 📖 Documentation API
+
+Une fois l'application démarrée, accédez à la documentation Swagger :
+
+**http://localhost:3000/api**
+
+Vous y trouverez :
+- Tous les endpoints disponibles
+- Schémas des requêtes/réponses
+- Possibilité de tester les endpoints directement
+
+## 🚧 Roadmap
+
+### Phase actuelle : Infrastructure ✅
+- [x] Configuration Prisma
+- [x] Schéma de base de données
+- [x] Guards et décorateurs
+- [x] Configuration Swagger
+
+### Prochaines étapes
+
+#### Phase 3 : Organisation & Restaurant
+- [ ] Module Organization (CRUD)
+- [ ] Module Restaurant (CRUD)
+
+#### Phase 4 : User & Role
+- [ ] Module Auth (Login, Register)
+- [ ] Module User (CRUD)
+- [ ] Module Role (CRUD + permissions)
+
+#### Phase 5 : Menu & Dishes
+- [ ] Module Menu (CRUD)
+- [ ] Module Dish (CRUD)
+
+#### Phase 6 : Tables
+- [ ] Module Table (CRUD + statuts)
+
+#### Phase 7 : Orders
+- [ ] Module Order (CRUD + workflow)
+- [ ] WebSocket pour notifications temps réel
+
+#### Phase 8 : Payments
+- [ ] Module Payment (Cash)
+- [ ] Intégration Mobile Money (futur)
+
+#### Phase 9 : Statistics
+- [ ] Dashboard statistiques
+- [ ] Rapports de ventes
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+
+UNLICENSED - Projet privé
+
+## 👥 Auteurs
+
+- Votre équipe
+
+## 📞 Support
+
+Pour toute question ou problème, ouvrez une issue sur GitHub.
+
+---
+
+**Bon développement ! 🚀**
